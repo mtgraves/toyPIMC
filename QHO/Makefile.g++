@@ -1,0 +1,18 @@
+# This makefile is to build my pimc code
+
+ifdef mtgraves
+CC = g++
+endif
+
+
+RM = /bin/rm -f
+PROG = pimc_qho.e
+SOURCE = qho_main.cpp constants.cpp estimators.cpp
+
+#------------------------------------------------------------
+all:
+	$(CC) $(SOURCE) -o $(PROG)
+#------------------------------------------------------------
+
+clean:
+	$(RM) *o $(PROG)

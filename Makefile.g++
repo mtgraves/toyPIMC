@@ -1,0 +1,35 @@
+# Generic pimc g++ makefile
+
+CC      = g++
+LD      = g++
+
+# Edit below to include details on your specific host
+ifdef mtgraves
+OPT = -Wall -O3 -fno-math-errno
+CODEDIR = /home/max/local
+CFLAGS  = -I$(CODEDIR)/include
+LDFLAGS = -L$(CODEDIR)/lib -lboost_program_options -lboost_filesystem -lboost_system
+endif
+
+RM      = /bin/rm -f
+
+PROG    = pimc.e
+SOURCE  = qho_pimc.cpp
+OBJS    = $(SOURCE:.cpp=.o)
+#HEADERS = common.h pimc.h constants.h container.h path.h worm.h action.h potential.h move.h estimator.h lookuptable.h communicator.h setup.h cmc.h
+
+# -------------------------------------------------------------------------------
+all: $(PROG)
+
+# Link
+$(PROG): $(OBJS)
+	$(LD) $(OBJS) $(LDFLAGS) -o $(PROG)
+
+# Compile
+$(OBJS): $(SOURCE) 
+	$(CC) $(CFLAGS) -c $(SOURCE)
+
+# -------------------------------------------------------------------------------
+
+clean:
+	$(RM) $(PROG) $(OBJS) 
