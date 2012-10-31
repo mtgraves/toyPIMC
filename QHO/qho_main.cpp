@@ -1,42 +1,40 @@
-#include<iostream>
-#include<cmath>
-#include<vector>
-#include<fstream>
-//#include "constants.h"
+/**
+ * @file qho_main.cpp
+ * @author Max Graves
+ * @date 25-OCT-2012
+ *
+ * @brief main implementation file
+ */
+
+#include "common.h"
+#include "constants.h"
 #include "estimators.h"
-#include "../../PIMC/MersenneTwister.h"
+#include "setup.h"
 using namespace std;
 
 // ==================================================================
-// Define important values
+// GLOBAL---> FUCKING BAD!!
 // ==================================================================
-int M = 10;
-// temp
-double T = 0.2;
-// mass in amu
-double m = 1.0;
-// num of MC steps to take
-int s = 100000;
-
-double hbar = 1;
+/*double hbar = 1;
 double k = 1;       // Boltzmann constant
 double beta = 1/(k*T);
 double w = 1;
 double tau = beta/M;
 typedef unsigned long uint32;
 
-/* define seed for RNG */
+// define seed for RNG
 uint32 seed = 139853;       //139853 originally
-/* instantiate MTRand class */
-MTRand random(seed);
-
+// instantiate MTRand class
+MTRand randy(seed);
+*/
 // ==================================================================
 // Begin Function Main
 // ==================================================================
-int main(){
+int main(){ 
     // instantiate classes
-    //constants con;
+    constants con;
     estimators estim;
+    
     // number im.Time slices
     /*int dirka = 10;
     con.setM(dirka);
@@ -67,7 +65,7 @@ int main(){
 
     /* populate array with M randomly placed beads */
     for (int i=0; i<M; i++){
-        double r = 2*random.rand()-1;
+        double r = 2*randy.rand()-1;
         aa.push_back(r);
         steps.push_back(i);
     }
@@ -82,17 +80,17 @@ int main(){
     for (int z=0; z<s; z++){
         //cout<< "============MC SWEEP NUMBER "<<z+1<<"============"<<endl;
         bb = aa;
-        double r = random.rand();
+        double r = randy.rand();
         if (r <= 0.25){
-            double R1 = (2*random.rand()-1);
+            double R1 = (2*randy.rand()-1);
             double R = 0;
             for (int i=0; i<M; i++){
                 aa[i] = aa[i] + R1;
             }
         }
         else{
-            int R = random.randInt(M-1);
-            aa[R] = aa[R] + (2*random.rand()-1);
+            int R = randy.randInt(M-1);
+            aa[R] = aa[R] + (2*randy.rand()-1);
         }
 
         /****** Calculate Primitive Action ***********************************/
@@ -125,7 +123,7 @@ int main(){
             aa = aa;
         }
         else{
-            r = random.rand();
+            r = randy.rand();
             if (r <= rho){
                 aa = aa;
                 accept += 1;
@@ -160,9 +158,15 @@ int main(){
     // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
     // DATA HANDLING
     // =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    ofstream outputFile;
+    // Using Boost filesystem, create directory for output.
+    boost::filesystem::path outputPath("output");
+    boost::filesystem::create_directory(outputPath);
+    
+    string estimators = boost::str(boost::format("output/pimc-est-%d.dat") % N);
 
-    outputFile.open("./output/output.dat");
+    ofstream outputFile;
+    outputFile.open( estimators.c_str() );
+
     outputFile << "#" << "\t" << "<x>"  << "\t"<< "stDevX" << "\t" << "<E>" << "\t" << "stDevE" << endl;
     for (int i=0; i<bin; i++){
         outputFile << i << "\t" << aveX[i]  << "\t"<< stDevX[i] << "\t" << aveE[i]  << "\t"<< stDevE[i] << endl;

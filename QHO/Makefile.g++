@@ -1,18 +1,35 @@
-# This makefile is to build my pimc code
+# Generic pimc g++ makefile
 
+CC      = g++
+LD      = g++
+
+# Edit below to include details on your specific host
 ifdef mtgraves
-CC = g++
+OPT = -Wall -O3 -fno-math-errno
+CODEDIR = /home/max/local
+CFLAGS  = -I$(CODEDIR)/include
+LDFLAGS = -L$(CODEDIR)/lib -lboost_program_options -lboost_filesystem -lboost_system
 endif
 
+RM      = /bin/rm -f
 
-RM = /bin/rm -f
-PROG = pimc_qho.e
-SOURCE = qho_main.cpp constants.cpp estimators.cpp
+PROG    = pimc.e
+SOURCE  = qho_main.cpp estimators.cpp constants.cpp
+OBJS    = $(SOURCE:.cpp=.o)
+HEADERS = estimators.h constants.h
 
-#------------------------------------------------------------
-all:
-	$(CC) $(SOURCE) -o $(PROG)
-#------------------------------------------------------------
+# -------------------------------------------------------------------------------
+all: $(PROG)
+
+# Link
+$(PROG): $(OBJS)
+	$(LD) $(OBJS) $(LDFLAGS) -o $(PROG)
+
+# Compile
+$(OBJS): $(SOURCE) 
+	$(CC) $(CFLAGS) -c $(SOURCE)
+
+# -------------------------------------------------------------------------------
 
 clean:
-	$(RM) *o $(PROG)
+	$(RM) $(PROG) $(OBJS) 

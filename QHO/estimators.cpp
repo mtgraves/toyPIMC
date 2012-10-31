@@ -3,7 +3,7 @@
 #include<iostream>
 #include<cstdlib>
 #include<vector>
-#include "../../PIMC/MersenneTwister.h"
+#include "MersenneTwister.h"
 using namespace std;
 
 // =======================================================================
