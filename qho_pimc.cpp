@@ -2,7 +2,7 @@
 #include<cmath>
 #include<vector>
 #include<fstream>
-#include "../PIMC/MersenneTwister.h"
+#include "MersenneTwister.h"
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 using namespace std;
